@@ -13,7 +13,7 @@ public class StringCalculator {
         Pattern pattern = Pattern.compile("//(.+)\n(.+)");
         Matcher matcher = pattern.matcher(numbers);
         if (matcher.matches()) {
-            String delimiter = Matcher.quoteReplacement(matcher.group(1)); // Escape delimiter
+            String delimiter = parseCustomDelimiter(matcher.group(1));
             String numberString = matcher.group(2);
             return sumNumbersWithDelimiter(numberString, delimiter);
         }
@@ -22,17 +22,27 @@ public class StringCalculator {
         return sumNumbersWithDelimiter(numbers, ",");
     }
 
+    private static String parseCustomDelimiter(String delimiter) {
+        if (delimiter.startsWith("[") && delimiter.endsWith("]")) {
+            // Remove the square brackets from the delimiter
+            return delimiter.substring(1, delimiter.length() - 1);
+        }
+        return delimiter;
+    }
+
     private static int sumNumbersWithDelimiter(String numbers, String delimiter) {
         String[] numArray = numbers.split("[\n" + Pattern.quote(delimiter) + "]");
         List<Integer> negatives = new ArrayList<>();
         int total = 0;
 
         for (String num : numArray) {
-            int value = Integer.parseInt(num);
-            if (value < 0) {
-                negatives.add(value);
-            } else if (value <= 1000) { // Ignore numbers larger than 1000
-                total += value;
+            if (!num.isEmpty()) {
+                int value = Integer.parseInt(num);
+                if (value < 0) {
+                    negatives.add(value);
+                } else if (value <= 1000) {
+                    total += value;
+                }
             }
         }
 
@@ -71,5 +81,8 @@ public class StringCalculator {
 
         // Test case with numbers larger than 1000
         System.out.println(addNumbers("2,1001"));          // Output: 2
+
+        // Test case with delimiter of any length
+        System.out.println(addNumbers("//[***]\n1***2***3"));   // Output: 6
     }
 }
