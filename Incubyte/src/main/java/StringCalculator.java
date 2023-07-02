@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,10 +24,19 @@ public class StringCalculator {
 
     private static int sumNumbersWithDelimiter(String numbers, String delimiter) {
         String[] numArray = numbers.split("[\n" + Pattern.quote(delimiter) + "]");
+        List<Integer> negatives = new ArrayList<>();
         int total = 0;
 
         for (String num : numArray) {
-            total += Integer.parseInt(num);
+            int value = Integer.parseInt(num);
+            if (value < 0) {
+                negatives.add(value);
+            }
+            total += value;
+        }
+
+        if (!negatives.isEmpty()) {
+            throw new IllegalArgumentException("Negatives not allowed: " + negatives.toString());
         }
 
         return total;
@@ -50,5 +60,12 @@ public class StringCalculator {
         System.out.println(addNumbers("//;\n1;2"));         // Output: 3
         System.out.println(addNumbers("//-\n4-6-8"));       // Output: 18
         System.out.println(addNumbers("//|\n10|20|30"));    // Output: 60
+
+        // Test case with negative numbers
+        try {
+            System.out.println(addNumbers("1,-2,3,-4"));    // Throws exception: Negatives not allowed: [-2, -4]
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
