@@ -31,8 +31,9 @@ public class StringCalculator {
             int value = Integer.parseInt(num);
             if (value < 0) {
                 negatives.add(value);
+            } else if (value <= 1000) { // Ignore numbers larger than 1000
+                total += value;
             }
-            total += value;
         }
 
         if (!negatives.isEmpty()) {
@@ -67,5 +68,8 @@ public class StringCalculator {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+
+        // Test case with numbers larger than 1000
+        System.out.println(addNumbers("2,1001"));          // Output: 2
     }
 }
